@@ -1,0 +1,104 @@
+{
+	"name": "Calling_SP",
+	"properties": {
+		"activities": [
+			{
+				"name": "Stored procedure1",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set Last Name",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dbo].[dbo.SP_Insert_Emp]",
+					"storedProcedureParameters": {
+						"FNAME": {
+							"value": {
+								"value": "@variables('FNAME')",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"LNAME": {
+							"value": {
+								"value": "@variables('LNAME')",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set FirstName",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "FNAME",
+					"value": {
+						"value": "@replace(pipeline().parameters.FirstName,'Mr.' , '')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set Last Name",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set FirstName",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "LNAME",
+					"value": {
+						"value": "@trim(pipeline().parameters.LastName)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"FirstName": {
+				"type": "String",
+				"defaultValue": "Soumya"
+			},
+			"LastName": {
+				"type": "String",
+				"defaultValue": "Garabadu"
+			}
+		},
+		"variables": {
+			"FNAME": {
+				"type": "String"
+			},
+			"LNAME": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-11T13:12:02Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

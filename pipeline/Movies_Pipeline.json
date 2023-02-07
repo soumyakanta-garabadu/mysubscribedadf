@@ -1,0 +1,52 @@
+{
+	"name": "Movies_Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "MoviesTransformations",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "tableName",
+						"value": "@pipeline().parameters.tableName"
+					}
+				],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "MoviesTransformations",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"AzureSql": {
+								"tableName": {
+									"value": "@pipeline().parameters.tableName",
+									"type": "Expression"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"parameters": {
+			"tableName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-01-19T08:58:24Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
